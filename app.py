@@ -7,11 +7,10 @@ from test_ingestion_infra.pipeline_ci_cd import MyPipelineStack
 
 
 app = cdk.App()
+# Use this code when loading services manually.
 # dev =  ProducerStack(app, "ProducerStack", env=cdk.Environment(account="211125525499", region="eu-west-2"))
 # prod = ConsumerStack(app, "ConsumerStack", env=cdk.Environment(account="211125525499", region="eu-west-2"))
 
 
 MyPipelineStack(app, "MyPipelineStack")
-app.synth()
-
 app.synth()
