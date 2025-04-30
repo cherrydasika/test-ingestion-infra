@@ -1,0 +1,8 @@
+{
+    "app": "python app.py",
+    "context": {
+      "github_connection": "arn:aws:codeconnections:eu-west-2:211125525499:connection/2626272a-646b-436b-ba05-a32c2be1a4f6",
+      "dev_account_id": "211125525499"
+    }
+  }
+  
