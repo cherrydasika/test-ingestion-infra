@@ -1,6 +1,6 @@
-from aws_cdk import Stack
+from aws_cdk import Fn, Stack
 from constructs import Construct
-from aws_cdk import Fn
+
 
 class ConsumerStack(Stack):
 

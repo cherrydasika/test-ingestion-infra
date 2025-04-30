@@ -1,9 +1,12 @@
-from aws_cdk import Stack
-from aws_cdk.pipelines import CodePipeline, CodePipelineSource, ShellStep, CodeBuildOptions
-from constructs import Construct
-from test_ingestion_infra.my_app_stage import BucketCreationStage
-import aws_cdk.aws_iam as iam
 import aws_cdk.aws_codebuild as codebuild
+import aws_cdk.aws_iam as iam
+from aws_cdk import Stack
+from aws_cdk.pipelines import (CodeBuildOptions, CodePipeline,
+                               CodePipelineSource, ShellStep)
+from constructs import Construct
+
+from test_ingestion_infra.my_app_stage import BucketCreationStage
+
 
 class CdkPipelineStack(Stack):
     def __init__(self, scope: Construct, construct_id: str, **kwargs):
@@ -17,22 +20,24 @@ class CdkPipelineStack(Stack):
             synth=ShellStep(
                 "Synth",
                 input=CodePipelineSource.connection(
-                    repo_string="cherry_dasika/test-ingestion-infra",
+                    repo_string="cherrydasika/test-ingestion-infra",
                     branch="dev",
-                    connection_arn=self.node.try_get_context("github_connection")  # supply via cdk.json or CLI
+                    connection_arn=self.node.try_get_context(
+                        "github_connection"
+                    ),  # supply via cdk.json or CLI
                 ),
                 commands=[
-                     "npm install -g aws-cdk",
+                    "npm install -g aws-cdk",
                     "pip install poetry",
                     "poetry install --no-interaction --no-root --without dev,test,typing",
                     "poetry run cdk synth",
-                ]
+                ],
             ),
             code_build_defaults=CodeBuildOptions(
                 role_policy=[
                     iam.PolicyStatement(
                         actions=["sts:GetServiceBearerToken", "codeartifact:*"],
-                        resources=["*"]
+                        resources=["*"],
                     )
                 ]
             ),
@@ -40,10 +45,14 @@ class CdkPipelineStack(Stack):
         )
 
         # Add application stage (can be reused across environments)
-        s3_bucket_stage = BucketCreationStage(self, "dev", env={
-            "account": self.node.try_get_context("dev_account_id"),
-            "region": "eu-west-2"
-        })
+        s3_bucket_stage = BucketCreationStage(
+            self,
+            "dev",
+            env={
+                "account": self.node.try_get_context("dev_account_id"),
+                "region": "eu-west-2",
+            },
+        )
         pipeline.add_stage(s3_bucket_stage)
 
         # You could add a prod stage as well:

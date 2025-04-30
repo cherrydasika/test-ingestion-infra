@@ -3,8 +3,8 @@ from unittest.mock import patch
 
 import pytest
 import requests
-from test_ingestion_infra.utils import (
-    add, capitalize_words, to_uppercase)
+
+from test_ingestion_infra.utils import add, capitalize_words, to_uppercase
 
 
 def test_to_uppercase():
